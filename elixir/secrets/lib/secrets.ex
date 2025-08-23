@@ -1,5 +1,5 @@
 defmodule Secrets do
-  use Bitwise, skip_operators: true
+  import Bitwise
 
   def secret_add(secret) do
     fn n -> n + secret end
