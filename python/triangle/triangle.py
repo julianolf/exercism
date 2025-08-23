@@ -1,28 +1,24 @@
-def is_triangle(a, b, c):
-    if any(n <= 0 for n in [a, b, c]):
-        return False
-    elif any(x < y for x, y in [(a + b, c), (b + c, a), (a + c, b)]):
-        return False
-    else:
-        return True
+from itertools import combinations
+
+def is_triangle(f):
+    return lambda s: all(s) and (2 * max(s) <= sum(s)) and f(s)
 
 
+@is_triangle
 def is_equilateral(sides):
-    a, b, c = sides
-    return is_triangle(a, b, c) and (a == b == c)
+    return len(set(sides)) == 1
 
 
+@is_triangle
 def is_isosceles(sides):
-    a, b, c = sides
-    return is_triangle(a, b, c) and (a == b or b == c or a ==c)
+    return len(set(sides)) < 3
 
 
+@is_triangle
 def is_scalene(sides):
-    a, b, c = sides
-    return is_triangle(a, b, c) and (a != b != c)
+    return len(set(sides)) == 3
 
 
+@is_triangle
 def is_degenerate(sides):
-    a, b, c = sides
-    mix = [(a + b, c), (b + c, a), (a + c, b)]
-    return is_triangle(a, b, c) and any(x == y for x, y in mix)
+    return any(x == sum(sides) - x for x in map(sum, combinations(sides, 2)))
