@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 usage() {
-	echo "Usage: error_handling.sh <person>"
+	echo "Usage: ${0##/} <person>"
 }
 
 hello() {
@@ -9,12 +9,12 @@ hello() {
 }
 
 main () {
-	if [[ $# != 1 ]]; then
-		usage
+	if [[ $# -ne 1 ]]; then
+		usage "$@"
 		exit 1
 	fi
-
-	hello "$1"
+	
+	hello "$@"
 }
 
 main "$@"
