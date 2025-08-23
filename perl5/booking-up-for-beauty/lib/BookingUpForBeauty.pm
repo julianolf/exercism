@@ -17,13 +17,13 @@ sub _parse_datetime ($date_string) {
 
 sub appointment_has_passed ($date_string) {
     my $time = _parse_datetime($date_string);
-    my $now = localtime;
+    my $now = Time::Piece->gmtime;
     return $time < $now;
 }
 
 sub is_afternoon_appointment ($date_string) {
     my $time = _parse_datetime($date_string);
-    return $time->hour >= 12 && $time->hour < 18;
+    return 12 <= $time->hour < 18;
 }
 
 sub describe_appointment ($date_string) {
