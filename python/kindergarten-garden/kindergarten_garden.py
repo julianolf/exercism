@@ -1,18 +1,17 @@
-PLANTS = {
-    'C': 'Clover',
-    'G': 'Grass',
-    'R': 'Radishes',
-    'V': 'Violets'
-}
-
-STUDENTS = (
-    'Alice', 'Bob', 'Charlie', 'David',
-    'Eve', 'Fred', 'Ginny', 'Harriet',
-    'Ileana', 'Joseph', 'Kincaid', 'Larry'
-)
-
-
 class Garden(object):
+    PLANTS = {
+        'C': 'Clover',
+        'G': 'Grass',
+        'R': 'Radishes',
+        'V': 'Violets'
+    }
+
+    STUDENTS = (
+        'Alice', 'Bob', 'Charlie', 'David',
+        'Eve', 'Fred', 'Ginny', 'Harriet',
+        'Ileana', 'Joseph', 'Kincaid', 'Larry'
+    )
+
     def __init__(self, diagram='', students=STUDENTS):
         self.diagram = diagram.split()
         self.students = sorted(students)
@@ -27,4 +26,4 @@ class Garden(object):
         idx = self.students.index(student) * 2
         vegs = list(row1[idx:idx+2]) + list(row2[idx:idx+2])
 
-        return [PLANTS[v] for v in vegs]
+        return [self.PLANTS[v] for v in vegs]
