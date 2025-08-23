@@ -29,7 +29,7 @@ impl Allergies {
             Allergen::Cats => 128,
         };
 
-        self.0 & value != 0
+        self.0 & value == value
     }
 
     pub fn allergies(&self) -> Vec<Allergen> {
