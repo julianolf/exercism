@@ -1,7 +1,14 @@
-NORTH = 1
-EAST = 2
-SOUTH = 3
-WEST = 4
+NORTH = 0
+EAST = 90
+SOUTH = 180
+WEST = 270
+
+directions = {
+    NORTH: (0, 1),
+    EAST: (1, 0),
+    SOUTH: (0, -1),
+    WEST: (-1, 0),
+}
 
 
 class Robot:
@@ -15,22 +22,15 @@ class Robot:
         return (self.x_pos, self.y_pos)
 
     def turn_right(self):
-        self.direction = (self.direction + 1) % 5 or 1
+        self.direction = (self.direction + 90) % 360
 
     def turn_left(self):
-        self.direction = self.direction - 1 or 4
+        self.direction = (self.direction - 90) % 360
 
     def advance(self):
-        if self.direction == NORTH:
-            self.y_pos += 1
-        elif self.direction == EAST:
-            self.x_pos += 1
-        elif self.direction == SOUTH:
-            self.y_pos -= 1
-        elif self.direction == WEST:
-            self.x_pos -= 1
-        else:
-            raise ValueError(f"Unknown direction {self.direction}")
+        x, y = directions[self.direction]
+        self.x_pos += x
+        self.y_pos += y
 
     def move(self, instructions):
         for instruction in instructions:
