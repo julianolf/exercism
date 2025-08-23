@@ -1,11 +1,11 @@
 def is_paired(input_string: str = '') -> bool:
-    brackets = '[{(]})'
+    brackets = {'[': ']', '{': '}', '(': ')'}
     stack = []
     for char in input_string:
-        if char in brackets[:3]:
+        if char in brackets:
             stack.append(char)
-        elif char in brackets[3:]:
-            if not stack or stack[-1] != brackets[brackets.index(char) % 3]:
+        elif char in brackets.values():
+            if not stack or brackets[stack[-1]] != char:
                 return False
             else:
                 stack.pop()
