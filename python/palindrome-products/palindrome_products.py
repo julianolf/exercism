@@ -1,54 +1,51 @@
-from functools import wraps
-from itertools import combinations_with_replacement
+from collections import defaultdict
+from functools import cache
+from itertools import product
 
 
-def validate(func):
-    @wraps(func)
-    def wrapper(max_factor, min_factor=0):
-        if min_factor > max_factor:
-            raise ValueError("min must be <= max")
+@cache
+def is_palindrome(number):
+    string = str(number)
+    return string == string[::-1]
 
-        return func(max_factor, min_factor)
+def get_palindrome(start, stop):
+    palindromes = defaultdict(list)
 
-    return wrapper
+    for a, b in product(range(start, stop + 1), repeat=2):
+        number = a * b
 
+        if is_palindrome(number):
+            palindromes[number].append([a, b])
 
-def products(start, stop):
-    seq = range(start, stop + 1)
-    return (a * b for a, b in combinations_with_replacement(seq, 2))
-
-
-def palindromes(numbers):
-    return filter(lambda n: str(n) == str(n)[::-1], numbers)
+    return palindromes
 
 
-def factors(number, min_factor, max_factor):
-    facs = (
-        (f, number // f)
-        for f in range(min_factor, max_factor + 1)
-        if (number % f == 0 and number // f >= min_factor and number // f <= max_factor)
-    )
-    return set(map(frozenset, facs))
+def largest(max_factor, min_factor=0):
+    if min_factor > max_factor:
+        raise ValueError("min must be <= max")
 
+    palindromes = get_palindrome(min_factor, max_factor)
 
-def get_palindrome(which, min_factor, max_factor):
-    pals = tuple(palindromes(products(min_factor, max_factor)))
-
-    if not pals:
+    if not palindromes:
         return None, []
 
-    some = which(pals)
-    return some, factors(some, min_factor, max_factor)
+    key = max(palindromes.keys())
+
+    return key, palindromes[key]
 
 
-@validate
-def largest(max_factor, min_factor=0):
-    return get_palindrome(max, min_factor, max_factor)
-
-
-@validate
 def smallest(max_factor, min_factor=0):
+    if min_factor > max_factor:
+        raise ValueError("min must be <= max")
+
     if min_factor == 1:
         return 1, {(1, 1)}
 
-    return get_palindrome(min, min_factor, max_factor)
+    palindromes = get_palindrome(min_factor, max_factor)
+
+    if not palindromes:
+        return None, []
+
+    key = min(palindromes.keys())
+
+    return key, palindromes[key]
