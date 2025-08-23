@@ -8,12 +8,11 @@ steps = {"m": 1, "M": 2, "A": 3}
 class Scale:
     def __init__(self, tonic):
         self.tonic = tonic.capitalize()
-        self.notes = sharp_notes if self.key_signature(tonic) == "#" else flat_notes
 
-    def key_signature(self, tonic):
-        if "#" in tonic or tonic in ("C", "G", "D", "A", "E", "B", "a", "e", "b"):
-            return "#"
-        return "b"
+        if self.key_signature(tonic) == "#":
+            self.notes = sharp_notes
+        else:
+            self.notes = flat_notes
 
     def chromatic(self):
         index = self.notes.index(self.tonic)
@@ -29,3 +28,13 @@ class Scale:
             scale.append(self.notes[index])
 
         return scale
+
+    @staticmethod
+    def key_signature(tonic, ascending=True):
+        if ascending and tonic in ("C", "a"):
+            return "#"
+
+        if "#" in tonic or tonic in ("G", "D", "A", "E", "B", "e", "b"):
+            return "#"
+
+        return "b"
