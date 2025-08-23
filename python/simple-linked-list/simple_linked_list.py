@@ -1,7 +1,7 @@
 class Node:
-    def __init__(self, value):
+    def __init__(self, value, next_node=None):
         self._value = value
-        self._next = None
+        self._next = next_node
 
     def value(self):
         return self._value
@@ -9,21 +9,15 @@ class Node:
     def next(self):
         return self._next
 
-    def set_next(self, node):
-        self._next = node
-
 
 class LinkedList:
     def __init__(self, values=None):
         self._head = None
+        self._length = 0
 
         if values:
-            self._head = Node(values[0])
-
-            for value in values[1:]:
-                node = Node(value)
-                node.set_next(self._head)
-                self._head = node
+            for value in values:
+                self.push(value)
 
     def __iter__(self):
         node = self._head
@@ -33,7 +27,7 @@ class LinkedList:
             node = node.next()
 
     def __len__(self):
-        return sum(1 for _ in self)
+        return self._length
 
     def head(self):
         if self._head is None:
@@ -42,25 +36,21 @@ class LinkedList:
         return self._head
 
     def push(self, value):
-        node = Node(value)
-
-        if self._head is None:
-            self._head = node
-        else:
-            node.set_next(self._head)
-            self._head = node
+        self._head = Node(value, self._head)
+        self._length += 1
 
     def pop(self):
         if self._head is None:
             raise EmptyListException("The list is empty.")
 
-        node = self._head
+        value = self._head.value()
         self._head = self._head.next()
+        self._length -= 1
 
-        return node.value()
+        return value
 
     def reversed(self):
-        return reversed([value for value in self])
+        return LinkedList(self)
 
 
 class EmptyListException(Exception):
