@@ -1,10 +1,8 @@
+import itertools
 import re
 
 
 def decode(string):
-    if not string:
-        return string
-
     chars = []
 
     for mtch in re.finditer(r"((?P<qtd>\d{0,2})(?P<chr>[a-zA-Z ]))", string):
@@ -17,24 +15,14 @@ def decode(string):
 
 
 def encode(string):
-    if not string:
-        return string
+    chars = []
 
-    counter = []
-    current = [1, string[0]]
+    for char, group in itertools.groupby(string):
+        qtd = len(list(group))
 
-    end = len(string) - 2
+        if qtd > 1:
+            chars.append(str(qtd))
 
-    for idx, char in enumerate(string[1:]):
-        if char == current[1]:
-            current[0] += 1
-        else:
-            counter.append(current)
-            current = [1, char]
-
-        if idx == end:
-            counter.append(current)
-
-    chars = [str(val) for item in counter for val in item if val != 1]
+        chars.append(char)
 
     return "".join(chars)
