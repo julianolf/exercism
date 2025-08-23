@@ -1,4 +1,5 @@
 """Functions for creating, transforming, and adding prefixes to strings."""
+import re
 
 
 def add_prefix_un(word):
@@ -8,7 +9,7 @@ def add_prefix_un(word):
     :return: str - of root word prepended with 'un'.
     """
 
-    pass
+    return f"un{word}"
 
 
 def make_word_groups(vocab_words):
@@ -26,7 +27,11 @@ def make_word_groups(vocab_words):
     produces the following string: 'en :: enclose :: enjoy :: enlighten'.
     """
 
-    pass
+    prefix = vocab_words[0]
+    words = [f"{prefix}{word}" for word in vocab_words[1:]]
+    words.insert(0, prefix)
+
+    return " :: ".join(words)
 
 
 def remove_suffix_ness(word):
@@ -38,7 +43,12 @@ def remove_suffix_ness(word):
     For example: "heaviness" becomes "heavy", but "sadness" becomes "sad".
     """
 
-    pass
+    new_word = word.rsplit("ness", maxsplit=1)[0]
+
+    if re.match(r"^.*[^aeiouy]i$", new_word, flags=re.I):
+        new_word = new_word[:-1] + "y"
+
+    return new_word
 
 
 def adjective_to_verb(sentence, index):
@@ -48,7 +58,9 @@ def adjective_to_verb(sentence, index):
     :param index: int - index of the word to remove and transform.
     :return: str - word that changes the extracted adjective to a verb.
 
-    For example, ("It got dark as the sun set.", 2) becomes "darken".
+    For example, ("It got dark as the sun set", 2) becomes "darken".
     """
 
-    pass
+    words = sentence.replace(".", "").split()
+
+    return f"{words[index]}en"
