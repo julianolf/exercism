@@ -9,11 +9,9 @@ type Chessboard map[string]File
 func CountInFile(cb Chessboard, file string) int {
 	var c int
 
-	if f, ok := cb[file]; ok {
-		for _, v := range f {
-			if v {
-				c++
-			}
+	for _, v := range cb[file] {
+		if v {
+			c++
 		}
 	}
 
@@ -41,8 +39,10 @@ func CountInRank(cb Chessboard, rank int) int {
 func CountAll(cb Chessboard) int {
 	var c int
 
-	for range cb {
-		c += 8
+	for _, f := range cb {
+		for range f {
+			c++
+		}
 	}
 
 	return c
@@ -52,8 +52,12 @@ func CountAll(cb Chessboard) int {
 func CountOccupied(cb Chessboard) int {
 	var c int
 
-	for f := range cb {
-		c += CountInFile(cb, f)
+	for _, f := range cb {
+		for _, r := range f {
+			if r {
+				c++
+			}
+		}
 	}
 
 	return c
