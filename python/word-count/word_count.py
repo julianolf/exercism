@@ -1,7 +1,7 @@
-from re import findall
 from collections import Counter
+from re import findall
 
 
 def word_count(phrase):
-    words = findall(r'\b[a-z0-9]+\'?[a-z]?\b', phrase.replace('_', ' ').lower())
+    words = findall(r'(\w+\'?\w|\d+)', phrase.replace('_', ' ').lower())
     return dict(Counter(words))
