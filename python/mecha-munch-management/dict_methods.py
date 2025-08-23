@@ -22,7 +22,7 @@ def read_notes(notes):
     :return: dict - a user shopping cart dictionary.
     """
 
-    return add_item({}, notes)
+    return dict.fromkeys(notes, 1)
 
 
 def update_recipes(ideas, recipe_updates):
