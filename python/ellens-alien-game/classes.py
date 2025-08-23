@@ -42,4 +42,4 @@ class Alien:
         pass
 
 def new_aliens_collection(start_positions):
-    return [Alien(x, y) for x, y in start_positions]
+    return [Alien(x_coord, y_coord) for x_coord, y_coord in start_positions]
