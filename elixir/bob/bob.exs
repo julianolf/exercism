@@ -1,23 +1,21 @@
 defmodule Bob do
-  defp is_question(msg), do: String.ends_with?(msg, "?")
+  defp nothing?(msg), do: String.trim(msg) == ""
 
-  defp is_yelling(msg) do
-    String.match?(msg, ~r/[^\d\W]/u) and msg == String.upcase(msg)
-  end
+  defp question?(msg), do: String.ends_with?(msg, "?")
 
-  defp is_yelling_question(msg) do
-    is_yelling(msg) and is_question(msg)
+  defp yelling?(msg) do
+    String.downcase(msg) != msg and msg == String.upcase(msg)
   end
 
   def hey(input) do
     cond do
-      String.trim(input) == "" ->
+      nothing?(input) ->
         "Fine. Be that way!"
-      is_yelling_question(input) ->
+      yelling?(input) and question?(input) ->
         "Calm down, I know what I'm doing!"
-      is_yelling(input) ->
+      yelling?(input) ->
         "Whoa, chill out!"
-      is_question(input) ->
+      question?(input) ->
         "Sure."
       true ->
         "Whatever."
