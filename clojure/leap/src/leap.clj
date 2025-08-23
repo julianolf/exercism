@@ -1,6 +1,6 @@
 (ns leap)
 
 (defn leap-year? [year]
-  (and (= (mod year 4) 0)
-       (or (not= (mod year 100) 0)
-           (= (mod year 400) 0))))
+  (and (zero? (mod year 4))
+       (or (not (zero? (mod year 100)))
+           (zero? (mod year 400)))))
