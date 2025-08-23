@@ -2,10 +2,7 @@ def tally(rows):
     db = {}
 
     for row in rows:
-        try:
-            team_one, team_two, match_result = row.split(";")
-        except ValueError:
-            continue
+        team_one, team_two, match_result = row.split(";")
 
         team_one_entry = db.get(team_one, [team_one, 0, 0, 0, 0, 0])
         team_two_entry = db.get(team_two, [team_two, 0, 0, 0, 0, 0])
@@ -30,8 +27,7 @@ def tally(rows):
         db[team_one] = team_one_entry
         db[team_two] = team_two_entry
 
-    results = list(db.values())
-    results = sorted(sorted(results), key=lambda i: i[-1], reverse=True)
+    results = sorted(list(db.values()), key=lambda i: (-i[-1], i[0]))
 
     table = ["Team                           | MP |  W |  D |  L |  P"]
 
