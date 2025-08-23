@@ -67,24 +67,30 @@ impl Team {
     }
 }
 
+impl fmt::Display for Team {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{:<30} | {:>2} | {:>2} | {:>2} | {:>2} | {:>2}",
+            self.name, self.matches, self.wins, self.draws, self.losses, self.points
+        )
+    }
+}
+
 struct Tournament<'a> {
     teams: HashMap<&'a str, Team>,
 }
 
 impl fmt::Display for Tournament<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:<30} | MP |  W |  D |  L |  P", "Team")?;
+        write!(f, "Team                           | MP |  W |  D |  L |  P")?;
 
         let mut teams: Vec<&Team> = self.teams.values().collect();
 
         teams.sort_by(|a, b| b.points.cmp(&a.points).then_with(|| a.name.cmp(&b.name)));
 
         for team in teams {
-            write!(
-                f,
-                "\n{:<30} | {:>2} | {:>2} | {:>2} | {:>2} | {:>2}",
-                team.name, team.matches, team.wins, team.draws, team.losses, team.points
-            )?;
+            write!(f, "\n{}", team)?;
         }
 
         write!(f, "")
