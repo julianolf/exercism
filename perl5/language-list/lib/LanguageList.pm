@@ -25,11 +25,5 @@ sub get_languages (@elements) {
 }
 
 sub has_language ($language) {
-    for my $element (@Languages) {
-        if ($element eq $language) {
-            return 1;
-        }
-    }
-
-    return 0;
+    return grep { $_ eq $language } @Languages;
 }
