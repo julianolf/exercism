@@ -1,5 +1,6 @@
 from re import sub
 from math import ceil, sqrt
+from itertools import zip_longest
 
 
 def encode(plain_text: str = '') -> str:
@@ -8,6 +9,6 @@ def encode(plain_text: str = '') -> str:
         return ''
     length = len(normalized)
     col = ceil(sqrt(length))
-    org = [normalized[i:(i + col)].ljust(col) for i in range(0, length, col)]
-    enc = [''.join(i) for i in zip(*org)]
+    org = [normalized[i:(i + col)] for i in range(0, length, col)]
+    enc = [''.join(i) for i in zip_longest(*org, fillvalue='')]
     return ' '.join(enc)
