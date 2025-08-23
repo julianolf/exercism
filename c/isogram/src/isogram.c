@@ -16,12 +16,11 @@ bool is_isogram(const char phrase[])
                 char current = tolower(phrase[i]);
 
                 if (isalpha(current)) {
-                        int pos = current - 97;
+                        int pos = current - 'a';
 
-                        if (ctable[pos] != current)
-                                ctable[pos] = current;
-                        else
+                        if (ctable[pos] == current)
                                 return false;
+                        ctable[pos] = current;
                 }
         }
 
