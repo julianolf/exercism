@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use crate::Direction::*;
 
 #[derive(PartialEq, Debug)]
 pub enum Direction {
@@ -8,62 +8,34 @@ pub enum Direction {
     West,
 }
 
-pub enum Movement {
-    Right,
-    Left,
-    Advance,
-}
-
-impl FromStr for Movement {
-    type Err = InvalidMovement;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "R" => Ok(Movement::Right),
-            "L" => Ok(Movement::Left),
-            "A" => Ok(Movement::Advance),
-            _ => Err(Self::Err {}),
-        }
-    }
-}
-
-pub struct InvalidMovement;
-
-pub struct Position {
+pub struct Robot {
     x: i32,
     y: i32,
-}
-
-pub struct Robot {
-    pos: Position,
-    dir: Direction,
+    direction: Direction,
 }
 
 impl Robot {
     pub fn new(x: i32, y: i32, d: Direction) -> Self {
-        Self {
-            pos: Position { x, y },
-            dir: d,
-        }
+        Self { x, y, direction: d }
     }
 
     #[must_use]
     pub fn turn_right(self) -> Self {
-        match self.dir {
-            Direction::North => Self {
-                dir: Direction::East,
+        match self.direction {
+            North => Self {
+                direction: East,
                 ..self
             },
-            Direction::South => Self {
-                dir: Direction::West,
+            South => Self {
+                direction: West,
                 ..self
             },
-            Direction::East => Self {
-                dir: Direction::South,
+            East => Self {
+                direction: South,
                 ..self
             },
-            Direction::West => Self {
-                dir: Direction::North,
+            West => Self {
+                direction: North,
                 ..self
             },
         }
@@ -71,21 +43,21 @@ impl Robot {
 
     #[must_use]
     pub fn turn_left(self) -> Self {
-        match self.dir {
-            Direction::North => Self {
-                dir: Direction::West,
+        match self.direction {
+            North => Self {
+                direction: West,
                 ..self
             },
-            Direction::South => Self {
-                dir: Direction::East,
+            South => Self {
+                direction: East,
                 ..self
             },
-            Direction::East => Self {
-                dir: Direction::North,
+            East => Self {
+                direction: North,
                 ..self
             },
-            Direction::West => Self {
-                dir: Direction::South,
+            West => Self {
+                direction: South,
                 ..self
             },
         }
@@ -93,33 +65,21 @@ impl Robot {
 
     #[must_use]
     pub fn advance(self) -> Self {
-        match self.dir {
-            Direction::North => Self {
-                pos: Position {
-                    y: self.pos.y + 1,
-                    ..self.pos
-                },
+        match self.direction {
+            North => Self {
+                y: self.y + 1,
                 ..self
             },
-            Direction::South => Self {
-                pos: Position {
-                    y: self.pos.y - 1,
-                    ..self.pos
-                },
+            South => Self {
+                y: self.y - 1,
                 ..self
             },
-            Direction::East => Self {
-                pos: Position {
-                    x: self.pos.x + 1,
-                    ..self.pos
-                },
+            East => Self {
+                x: self.x + 1,
                 ..self
             },
-            Direction::West => Self {
-                pos: Position {
-                    x: self.pos.x - 1,
-                    ..self.pos
-                },
+            West => Self {
+                x: self.x - 1,
                 ..self
             },
         }
@@ -127,28 +87,19 @@ impl Robot {
 
     #[must_use]
     pub fn instructions(self, instructions: &str) -> Self {
-        let mut robot = Robot { ..self };
-
-        for chr in instructions.split("") {
-            match Movement::from_str(chr) {
-                Ok(m) => match m {
-                    Movement::Left => robot = robot.turn_left(),
-                    Movement::Right => robot = robot.turn_right(),
-                    Movement::Advance => robot = robot.advance(),
-                },
-                Err(_) => continue,
-            }
-        }
-
-        robot
+        instructions.chars().fold(self, |robot, chr| match chr {
+            'L' => robot.turn_left(),
+            'R' => robot.turn_right(),
+            'A' => robot.advance(),
+            _ => robot,
+        })
     }
 
     pub fn position(&self) -> (i32, i32) {
-        let Position { x, y } = self.pos;
-        (x, y)
+        (self.x, self.y)
     }
 
     pub fn direction(&self) -> &Direction {
-        &self.dir
+        &self.direction
     }
 }
