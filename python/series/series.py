@@ -8,4 +8,4 @@ def slices(s, l):
     elif l > len(s):
         raise ValueError('Length cannot be greater than series')
 
-    return [s[i:i+l] for i in range(0, (len(s) - l + 1))]
+    return [s[i:i+l] for i in range(len(s) - l + 1)]
