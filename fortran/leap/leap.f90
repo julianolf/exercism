@@ -8,12 +8,8 @@ contains
 
     is_leap_year = .true.
 
-    if (mod(year, 4) == 0) then
-      if (mod(year ,100) == 0 .and. mod(year, 400) /= 0) then
+    if (mod(year, 4) /= 0 .or. (mod(year ,100) == 0 .and. mod(year, 400) /= 0)) then
         is_leap_year = .false.
-      end if
-    else
-      is_leap_year = .false.
     end if
   end function
 
