@@ -6,11 +6,5 @@ local nucleotides = {
 }
 
 return function(dna)
-  local rna = ""
-
-  for nucleotide in dna:gmatch("(.)") do
-    rna = rna .. nucleotides[nucleotide]
-  end
-
-  return rna
+  return dna:gsub("%a", nucleotides)
 end
