@@ -1,51 +1,47 @@
-from collections import defaultdict
-from functools import cache
-from itertools import product
-
-
-@cache
 def is_palindrome(number):
     string = str(number)
     return string == string[::-1]
 
-def get_palindrome(start, stop):
-    palindromes = defaultdict(list)
+def factors(palindrome, min_factor, max_factor):
+    pairs = set()
 
-    for a, b in product(range(start, stop + 1), repeat=2):
-        number = a * b
+    for number in range(min_factor, max_factor + 1):
+        res, rem = divmod(palindrome, number)
+        if rem == 0 and (min_factor <= res <= max_factor):
+            pairs.add((number, res))
 
+    return pairs
+
+def palindrome_factors(min_factor, max_factor, products_range):
+    pairs = set()
+
+    for number in products_range:
         if is_palindrome(number):
-            palindromes[number].append([a, b])
+            pairs = factors(number, min_factor, max_factor)
+            if pairs:
+                return number, pairs
 
-    return palindromes
+    return None, pairs
 
-
-def largest(max_factor, min_factor=0):
+def validate(min_factor, max_factor):
     if min_factor > max_factor:
         raise ValueError("min must be <= max")
 
-    palindromes = get_palindrome(min_factor, max_factor)
+def largest(max_factor, min_factor=0):
+    validate(min_factor, max_factor)
 
-    if not palindromes:
-        return None, []
+    start = max_factor ** 2
+    stop = min_factor ** 2 - 1
+    products_range = range(start, stop, -1)
 
-    key = max(palindromes.keys())
-
-    return key, palindromes[key]
+    return palindrome_factors(min_factor, max_factor, products_range)
 
 
 def smallest(max_factor, min_factor=0):
-    if min_factor > max_factor:
-        raise ValueError("min must be <= max")
+    validate(min_factor, max_factor)
 
-    if min_factor == 1:
-        return 1, {(1, 1)}
+    start = min_factor ** 2
+    stop = max_factor ** 2
+    products_range = range(start, stop)
 
-    palindromes = get_palindrome(min_factor, max_factor)
-
-    if not palindromes:
-        return None, []
-
-    key = min(palindromes.keys())
-
-    return key, palindromes[key]
+    return palindrome_factors(min_factor, max_factor, products_range)
