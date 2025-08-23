@@ -77,9 +77,7 @@ impl fmt::Display for Tournament<'_> {
 
         let mut teams: Vec<&Team> = self.teams.values().collect();
 
-        // There might be a better way for sorting
-        teams.sort_by(|a, b| a.name.cmp(&b.name));
-        teams.sort_by(|a, b| b.points.cmp(&a.points));
+        teams.sort_by(|a, b| b.points.cmp(&a.points).then_with(|| a.name.cmp(&b.name)));
 
         for team in teams {
             write!(
