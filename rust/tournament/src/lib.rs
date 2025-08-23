@@ -37,7 +37,7 @@ impl Not for MatchResult {
     }
 }
 
-#[derive(Eq, Ord, PartialEq, PartialOrd)]
+#[derive(Default, Eq, Ord, PartialEq, PartialOrd)]
 struct Team {
     name: String,
     matches: u32,
@@ -51,11 +51,7 @@ impl Team {
     fn new(name: &str) -> Self {
         Self {
             name: name.to_string(),
-            matches: 0,
-            wins: 0,
-            draws: 0,
-            losses: 0,
-            points: 0,
+            ..Default::default()
         }
     }
 
