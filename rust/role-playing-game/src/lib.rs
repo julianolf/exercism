@@ -33,8 +33,7 @@ impl Player {
 
                 mana_cost * 2
             }
-            Some(_) => 0,
-            None => 0,
+            _ => 0,
         }
     }
 }
