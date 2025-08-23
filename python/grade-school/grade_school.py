@@ -1,10 +1,11 @@
+from collections import defaultdict
+
+
 class School(object):
     def __init__(self):
-        self._grades = dict()
+        self._grades = defaultdict(set)
 
     def add_student(self, name, grade):
-        if grade not in self._grades:
-            self._grades[grade] = set()
         self._grades[grade].add(name)
 
     def roster(self):
