@@ -11,9 +11,10 @@ class Teenager(object):
         self.name = name
 
     def talk(self, something: str) -> str:
-        for func, msg in self.brain:
-            if func(something.strip()):
-                return msg
+        message = something.strip()
+        for func, resp in self.brain:
+            if func(message):
+                return resp
 
 def hey(phrase):
     return Teenager('Bob').talk(phrase)
