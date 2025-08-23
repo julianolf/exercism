@@ -22,23 +22,18 @@ class MeteredFile(io.BufferedRandom):
         return self
 
     def __next__(self):
-        data = self.readline()
+        data = super().readline()
 
         if len(data) == 0:
             raise StopIteration
-
-        return data
-
-    def read(self, size=-1):
-        data = super().read(size)
 
         self.__read_bytes += len(data)
         self.__read_ops += 1
 
         return data
 
-    def readline(self):
-        data = super().readline()
+    def read(self, size=-1):
+        data = super().read(size)
 
         self.__read_bytes += len(data)
         self.__read_ops += 1
