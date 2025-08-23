@@ -34,5 +34,6 @@ class ComplexNumber(object):
         return ComplexNumber(self.real, (self.imaginary * -1))
 
     def exp(self):
-        real = exp(self.real) * (cos(self.imaginary) + sin(self.imaginary))
-        return ComplexNumber(real, 0)
+        real = exp(self.real) * cos(self.imaginary)
+        imaginary = exp(self.real) * sin(self.imaginary)
+        return ComplexNumber(real, imaginary)
