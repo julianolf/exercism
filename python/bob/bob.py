@@ -1,9 +1,9 @@
 class Teenager(object):
     brain = [
         (lambda msg: not msg, 'Fine. Be that way!'),
-        (lambda msg: msg.isupper() and msg.endswith('?'), 'Calm down, I know what I\'m doing!'),
+        (lambda msg: msg.isupper() and msg[-1] == '?', 'Calm down, I know what I\'m doing!'),
         (lambda msg: msg.isupper(), 'Whoa, chill out!'),
-        (lambda msg: msg.endswith('?'), 'Sure.'),
+        (lambda msg: msg[-1] == '?', 'Sure.'),
         (lambda msg: True, 'Whatever.')
     ]
 
