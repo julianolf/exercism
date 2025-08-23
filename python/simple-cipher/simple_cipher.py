@@ -1,33 +1,23 @@
 from itertools import cycle
 from operator import add, sub
 from random import choice
-from string import ascii_lowercase
+from string import ascii_lowercase as chars
+
+S = 97
+L = 26
 
 
 class Cipher:
     def __init__(self, key=None):
-        if isinstance(key, str) and len(key.strip()) > 0:
-            self.key = key.lower()
+        if key is None:
+            self.key = "".join(choice(chars) for _ in range(100))
         else:
-            self.key = self._random_key()
-
-    def _random_key(self):
-        chars = [choice(ascii_lowercase) for _ in range(100)]
-        return "".join(chars)
+            self.key = key.lower()
 
     def _translate(self, text, op):
-        iterkey = cycle(self.key)
-        chars = []
+        it = zip(text, cycle(self.key))
 
-        for char in text:
-            key = next(iterkey)
-            key_idx = ascii_lowercase.index(key)
-            chr_idx = ascii_lowercase.index(char)
-            nxt_idx = op(chr_idx, key_idx) % 26
-            nxt_chr = ascii_lowercase[nxt_idx]
-            chars.append(nxt_chr)
-
-        return "".join(chars)
+        return "".join(chars[op(ord(a) % S, ord(b) % S) % L] for a, b in it)
 
     def encode(self, text):
         return self._translate(text, add)
