@@ -9,7 +9,7 @@ defmodule RNATranscription do
   """
   @spec to_rna([char]) :: [char]
   def to_rna(dna) do
-    nucleotides = %{71 => 67, 67 => 71, 84 => 65, 65 => 85}
+    nucleotides = %{?G => ?C, ?C => ?G, ?T => ?A, ?A => ?U}
     Enum.map(dna, &Map.get(nucleotides, &1))
   end
 end
