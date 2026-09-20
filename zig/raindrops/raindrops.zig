@@ -1,16 +1,12 @@
 const std = @import("std");
 
 pub fn convert(buffer: []u8, n: u32) []const u8 {
-    const pling = n % 3 == 0;
-    const plang = n % 5 == 0;
-    const plong = n % 7 == 0;
-
     var w = std.Io.Writer.fixed(buffer);
 
-    if (pling) w.writeAll("Pling") catch {};
-    if (plang) w.writeAll("Plang") catch {};
-    if (plong) w.writeAll("Plong") catch {};
-    if (!pling and !plang and !plong) w.print("{d}", .{n}) catch {};
+    if (n % 3 == 0) w.writeAll("Pling") catch unreachable;
+    if (n % 5 == 0) w.writeAll("Plang") catch unreachable;
+    if (n % 7 == 0) w.writeAll("Plong") catch unreachable;
+    if (w.end == 0) w.print("{d}", .{n}) catch unreachable;
 
     return buffer[0..w.end];
 }
