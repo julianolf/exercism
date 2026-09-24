@@ -1,8 +1,13 @@
 pub const HighScores = struct {
-    scores: []const i32,
-    top: [3]i32,
+    latest_: ?i32 = null,
+    best: ?i32 = null,
+    top: [3]i32 = undefined,
+    len: usize = 0,
 
     pub fn init(scores: []const i32) HighScores {
+        if (scores.len == 0)
+            return .{};
+
         var top: [3]i32 = @splat(0);
 
         for (scores) |score| {
@@ -18,31 +23,23 @@ pub const HighScores = struct {
             }
         }
 
-        return .{ .scores = scores, .top = top };
+        return .{
+            .latest_ = scores[scores.len - 1],
+            .best = top[0],
+            .top = top,
+            .len = @min(3, scores.len),
+        };
     }
 
     pub fn latest(self: *const HighScores) ?i32 {
-        if (self.scores.len == 0)
-            return null;
-
-        return self.scores[self.scores.len - 1];
+        return self.latest_;
     }
 
     pub fn personalBest(self: *const HighScores) ?i32 {
-        if (self.scores.len == 0)
-            return null;
-
-        var best: i32 = 0;
-        for (self.scores) |score| {
-            if (score > best)
-                best = score;
-        }
-
-        return best;
+        return self.best;
     }
 
     pub fn personalTopThree(self: *const HighScores) []const i32 {
-        const n: usize = @min(3, self.scores.len);
-        return self.top[0..n];
+        return self.top[0..self.len];
     }
 };
