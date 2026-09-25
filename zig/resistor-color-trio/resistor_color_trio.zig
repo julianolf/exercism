@@ -1,6 +1,4 @@
 const std = @import("std");
-const io = std.Io;
-const math = std.math;
 const mem = std.mem;
 
 const kilo: usize = 1_000;
@@ -25,7 +23,7 @@ pub fn resistance(colors: []const ColorBand) usize {
     const c2 = @as(usize, @intFromEnum(colors[1]));
     const c3 = @as(usize, @intFromEnum(colors[2]));
 
-    return (c1 * 10 + c2) * math.pow(usize, 10, c3);
+    return (c1 * 10 + c2) * std.math.pow(usize, 10, c3);
 }
 
 pub fn label(allocator: mem.Allocator, colors: []const ColorBand) mem.Allocator.Error![]u8 {
@@ -47,18 +45,9 @@ pub fn label(allocator: mem.Allocator, colors: []const ColorBand) mem.Allocator.
 
     const v = @as(f64, @floatFromInt(r)) / @as(f64, @floatFromInt(divisor));
 
-    var w: io.Writer.Allocating = .init(allocator);
-    errdefer w.deinit();
-
     if (prefix) |p| {
-        w.writer.print("{d} {s}ohms", .{ v, p }) catch |err| switch (err) {
-            io.Writer.Error.WriteFailed => return mem.Allocator.Error.OutOfMemory,
-        };
+        return try std.fmt.allocPrint(allocator, "{d} {s}ohms", .{ v, p });
     } else {
-        w.writer.print("{d} ohms", .{v}) catch |err| switch (err) {
-            io.Writer.Error.WriteFailed => return mem.Allocator.Error.OutOfMemory,
-        };
+        return try std.fmt.allocPrint(allocator, "{d} ohms", .{v});
     }
-
-    return try w.toOwnedSlice();
 }
