@@ -8,26 +8,32 @@ pub fn detectAnagrams(
     word: []const u8,
     candidates: []const []const u8,
 ) !std.BufSet {
-    const sorted_word = try std.ascii.allocLowerString(allocator, word);
-    defer allocator.free(sorted_word);
-    std.mem.sort(u8, sorted_word, {}, std.sort.asc(u8));
-
     var anagrams: std.BufSet = .init(allocator);
     errdefer anagrams.deinit();
 
+    const word_count = countChars(word);
     for (candidates) |candidate| {
         if (candidate.len != word.len)
             continue;
         if (std.ascii.eqlIgnoreCase(candidate, word))
             continue;
 
-        const sorted_candidate = try std.ascii.allocLowerString(allocator, candidate);
-        defer allocator.free(sorted_candidate);
-        std.mem.sort(u8, sorted_candidate, {}, std.sort.asc(u8));
-
-        if (std.mem.eql(u8, sorted_candidate, sorted_word))
+        const candidate_count = countChars(candidate);
+        if (std.mem.eql(u4, &candidate_count, &word_count))
             try anagrams.insert(candidate);
     }
 
     return anagrams;
+}
+
+fn countChars(word: []const u8) [26]u4 {
+    var counter: [26]u4 = @splat(0);
+    for (word) |c| {
+        if (!std.ascii.isAlphabetic(c))
+            continue;
+
+        const index: usize = std.ascii.toLower(c) - 'a';
+        counter[index] += 1;
+    }
+    return counter;
 }
