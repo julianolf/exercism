@@ -8,51 +8,25 @@ pub fn detectAnagrams(
     word: []const u8,
     candidates: []const []const u8,
 ) !std.BufSet {
-    var char_map: std.AutoHashMap(u8, u4) = .init(allocator);
-    defer char_map.deinit();
-
-    for (word) |c| {
-        if (!std.ascii.isAlphabetic(c))
-            continue;
-
-        const key = std.ascii.toLower(c);
-        const entry = try char_map.getOrPutValue(key, 0);
-        entry.value_ptr.* += 1;
-    }
+    const sorted_word = try std.ascii.allocLowerString(allocator, word);
+    defer allocator.free(sorted_word);
+    std.mem.sort(u8, sorted_word, {}, std.sort.asc(u8));
 
     var anagrams: std.BufSet = .init(allocator);
     errdefer anagrams.deinit();
 
-    outer: for (candidates) |candidate| {
-        if (candidate.len != word.len) continue;
-        if (std.ascii.eqlIgnoreCase(candidate, word)) continue;
+    for (candidates) |candidate| {
+        if (candidate.len != word.len)
+            continue;
+        if (std.ascii.eqlIgnoreCase(candidate, word))
+            continue;
 
-        var clone = try char_map.clone();
-        defer clone.deinit();
+        const sorted_candidate = try std.ascii.allocLowerString(allocator, candidate);
+        defer allocator.free(sorted_candidate);
+        std.mem.sort(u8, sorted_candidate, {}, std.sort.asc(u8));
 
-        for (candidate) |c| {
-            if (!std.ascii.isAlphabetic(c))
-                continue;
-
-            const key = std.ascii.toLower(c);
-            if (!clone.contains(key))
-                continue :outer;
-
-            const value = clone.getPtr(key);
-            if (value) |v| {
-                if (v.* == 0)
-                    continue :outer;
-                v.* -= 1;
-            }
-        }
-
-        var it = clone.valueIterator();
-        while (it.next()) |v| {
-            if (v.* != 0)
-                continue :outer;
-        }
-
-        try anagrams.insert(candidate);
+        if (std.mem.eql(u8, sorted_candidate, sorted_word))
+            try anagrams.insert(candidate);
     }
 
     return anagrams;
