@@ -1,16 +1,18 @@
 const std = @import("std");
 
 pub fn modifier(score: u8) i8 {
-    return std.math.divFloor(i8, @as(i8, @intCast(score)) - 10, 2) catch unreachable;
+    return @divFloor(@as(i8, @intCast(score)) - 10, 2);
 }
 
 pub fn ability(random: std.Random) u8 {
-    var dices: [4]u8 = undefined;
-    for (&dices) |*d| {
-        d.* = random.uintLessThan(u8, 6) + 1;
+    var sum: u8 = 0;
+    var smallest: u8 = 6;
+    for (0..4) |_| {
+        const roll = random.uintLessThan(u8, 6) + 1;
+        sum += roll;
+        smallest = @min(smallest, roll);
     }
-    std.mem.sort(u8, &dices, {}, std.sort.desc(u8));
-    return dices[0] + dices[1] + dices[2];
+    return sum - smallest;
 }
 
 pub fn hitpoints(constitution: u8) u8 {
