@@ -1,18 +1,19 @@
 const std = @import("std");
 
-pub fn primes(buffer: []u32, limit: u12) []u32 {
-    if (limit < 2) return buffer[0..0];
+pub fn primes(buffer: []u32, comptime limit: u32) []u32 {
+    var composite: std.StaticBitSet(@as(usize, limit) + 1) = .empty;
 
-    buffer[0] = 2;
+    var count: usize = 0;
+    var n: usize = 2;
+    while (n <= limit) : (n += 1) {
+        if (composite.isSet(n)) continue;
 
-    var i: usize = 1;
-    var n: u32 = 3;
-    search: while (n <= limit and i < buffer.len) : (n += 2) {
-        for (buffer[0..i]) |p| if (n % p == 0) continue :search;
+        buffer[count] = @intCast(n);
+        count += 1;
 
-        buffer[i] = n;
-        i += 1;
+        var m = n * n;
+        while (m <= limit) : (m += n) composite.set(m);
     }
 
-    return buffer[0..i];
+    return buffer[0..count];
 }
