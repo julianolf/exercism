@@ -1,23 +1,23 @@
 const std = @import("std");
 
-const minutes_per_day = 24 * 60;
-
 pub const Clock = struct {
     minutes: u16,
 
+    const minutes_per_day = 24 * 60;
+
     /// Initializes a Clock, normalizing the given hour and minute.
     pub fn init(hour: i32, minute: i32) Clock {
-        return fromMinutes(@as(i64, hour) * 60 + minute);
+        return .{ .minutes = normalize(@as(i64, hour) * 60 + minute) };
     }
 
     /// Moves the clock forwards by `minutes` minutes.
     pub fn advance(self: *Clock, minutes: i32) void {
-        self.* = fromMinutes(@as(i64, self.minutes) + minutes);
+        self.minutes = normalize(@as(i64, self.minutes) + minutes);
     }
 
     /// Moves the clock backwards by `minutes` minutes.
     pub fn rewind(self: *Clock, minutes: i32) void {
-        self.* = fromMinutes(@as(i64, self.minutes) - minutes);
+        self.minutes = normalize(@as(i64, self.minutes) - minutes);
     }
 
     /// Renders the time as "hh:mm".
@@ -32,7 +32,7 @@ pub const Clock = struct {
         return self.minutes == other.minutes;
     }
 
-    fn fromMinutes(minutes: i64) Clock {
-        return .{ .minutes = @intCast(@mod(minutes, minutes_per_day)) };
+    fn normalize(minutes: i64) u16 {
+        return @intCast(@mod(minutes, minutes_per_day));
     }
 };
