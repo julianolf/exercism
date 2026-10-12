@@ -21,16 +21,14 @@ pub fn countWords(allocator: mem.Allocator, s: []const u8) !std.StringHashMap(u3
         const token = mem.trim(u8, s[start..i], "'");
         if (token.len == 0) continue;
 
-        const word = try ascii.allocLowerString(allocator, token);
-        errdefer allocator.free(word);
-
-        const res = try count.getOrPut(word);
+        const res = try count.getOrPutAdapted(token, CaseInsensitiveContext{});
         if (res.found_existing) {
-            allocator.free(word);
             res.value_ptr.* += 1;
-        } else {
-            res.value_ptr.* = 1;
+            continue;
         }
+        errdefer count.removeByPtr(res.key_ptr);
+        res.key_ptr.* = try ascii.allocLowerString(allocator, token);
+        res.value_ptr.* = 1;
     }
 
     return count;
@@ -39,3 +37,21 @@ pub fn countWords(allocator: mem.Allocator, s: []const u8) !std.StringHashMap(u3
 fn isWordChar(c: u8) bool {
     return ascii.isAlphanumeric(c) or c == '\'';
 }
+
+const CaseInsensitiveContext = struct {
+    pub fn hash(_: CaseInsensitiveContext, key: []const u8) u64 {
+        var hasher: std.hash.Wyhash = .init(0);
+        var buf: [64]u8 = undefined;
+        var res = key;
+        while (res.len > 0) {
+            const n = @min(res.len, buf.len);
+            hasher.update(ascii.lowerString(&buf, res[0..n]));
+            res = res[n..];
+        }
+        return hasher.final();
+    }
+
+    pub fn eql(_: CaseInsensitiveContext, token: []const u8, stored: []const u8) bool {
+        return ascii.eqlIgnoreCase(token, stored);
+    }
+};
