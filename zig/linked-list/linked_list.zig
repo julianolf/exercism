@@ -28,13 +28,13 @@ pub fn LinkedList(comptime T: type) type {
             return node;
         }
 
-        pub fn shift(self: *@This()) ?*Node {
+        pub fn shift(self: *Self) ?*Node {
             const node = self.first orelse return null;
             self.unlink(node);
             return node;
         }
 
-        pub fn unshift(self: *@This(), node: *Node) void {
+        pub fn unshift(self: *Self, node: *Node) void {
             node.prev = null;
             node.next = self.first;
 
@@ -44,7 +44,7 @@ pub fn LinkedList(comptime T: type) type {
             self.len += 1;
         }
 
-        pub fn delete(self: *@This(), node: *Node) void {
+        pub fn delete(self: *Self, node: *Node) void {
             var curr = self.first;
             while (curr) |n| : (curr = n.next) {
                 if (n == node) return self.unlink(node);
